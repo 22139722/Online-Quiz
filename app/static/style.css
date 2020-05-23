@@ -1,0 +1,268 @@
+/* CONTENT
+1. Add Level Page
+2. Tables
+3. Heading
+4. Layout Design
+5. Form Design
+6. User Home Design
+7. User Quiz Page Design
+*/
+
+
+/* 1. ADD LEVEL PAGE START */
+.id_image
+{
+    max-height: 150px !important;
+    width:150px !important;
+}
+/* ADD LEVEL PAGE END */
+
+/* 2. TABLES */
+.table tr td img
+{
+    display: block;
+    margin: auto;
+}
+.table thead tr
+{
+    background-color: #eee;
+}
+
+.table tr td .btn
+{
+    display: block;
+    margin: auto;
+}
+.table tbody tr td:first-child
+{
+    font-weight: 800;
+}
+
+
+/* TABLES */
+
+/* 3 HEADING STYLES START HERE */
+
+.table-responsive h1 i:first-child
+{
+   margin-right: 20px;
+}
+
+h1{
+    color: #cc8d10;
+}
+h1 i{
+    margin-right: 20px;
+}
+
+/* 3 HEADING STYLES ENDS HERE */
+
+/* 4 Main Layout Style */
+.logo
+{
+    max-height: 30px !important;
+    max-width: 250px;
+}
+header .navbar
+{
+    background: #232f3e;
+}
+
+header .dropdown-menu .dropdown-item
+{
+    color: black;
+}
+.carousel-inner img {
+    width: 100%;
+    height: 400px !important;
+  }
+
+  header .navbar-dark .nav-item:hover
+  {
+      text-decoration: underline;
+  }
+  header .navbar-dark .active
+  {
+     font-weight: 600;
+  }
+
+
+
+/*ALL FORMS DESIGNING*/
+label{
+    font-weight: 600;
+
+}
+.add-user-box{
+    box-shadow: 0px 6px 12px 0px rgb(0,0,0.5,0.5);
+    padding: 20px;
+}
+
+/*LOGIN FORM STYLE COMES HERE*/
+.loginform input
+{
+    padding-left: 40px;
+}
+.loginform i {
+	position: absolute;
+	margin-top: -27px;
+	margin-left: 15px;
+}
+
+/*
+USER HOME DESIGN GOES HERE */
+
+.user-home
+{
+    background-color: #eee;
+    height: 100vh;
+}
+
+
+.user-home .card-deck .card{
+    width:100%;
+}
+.user-home .card-deck .card img{
+    opacity: 0.5;
+}
+.user-home .card-deck .card h4{
+   font-weight: 800;
+   color:black;
+}
+
+.user-home p{
+    color:#cc8d10;
+    text-decoration: underline;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 800;
+}
+@media screen and (max-width: 992px) {
+    .carousel-item img
+        {
+            width: 100%;
+            height: 20vh !important;
+        }
+        .card-deck .card{
+            height:20vh !important;
+        }
+        .card-deck .card img{
+            height: 50% !important;
+            width: 50% !important;
+            margin:auto;
+            display: block;
+        }
+        .user-home
+        {
+            padding-right: 0 !important;
+            padding-left:0 !important;
+
+        }
+  }
+/*
+USER QUIZ PAGE DESIGN GOES HERE */
+  .quiz-page .timer
+  {
+    font-weight: 800;
+    font-size: 20px;
+  }
+
+  .quiz-page #startquiz
+  {
+      font-weight: 600;
+      color:white;
+      font-size: 25px;
+  }
+
+  .quiz-page .response-sheet
+  {
+      padding-left: 50px;
+  }
+  .quiz-page .response-sheet h3
+  {
+      color:darkgrey;
+  }
+  .quiz-page .response-sheet .ques-num
+  {
+      color:white;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+  }
+  .quiz-page ul li
+  {
+      font-size: 13px;
+      color:grey;
+  }
+
+  @media screen and (max-width: 992px) {
+
+    .quiz-page #answer_sheet
+    {
+        margin-left:10px;
+        margin-right: 10px;
+    }
+
+  .quiz-page .response-sheet h3
+  {
+      margin-left:10px;
+      color:#232f3e;
+  }
+
+  .quiz-page .response-sheet .bg
+  {
+      width:100px !important;
+      margin-left:15px;
+      height: 20px !important;
+  }
+
+}
+
+.login-foot-nau
+{
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.login-card-footer p
+{
+    margin-bottom: 10px;
+}
+
+.signup-card
+{
+    width:75% !important;
+}
+
+
+#answer-box #mcq
+{
+    display: none;
+}
+#answer-box #short
+{
+    display: none;
+}
+
+
+#answer_sheet #mcq
+{
+    display: none;
+}
+
+#answer_sheet #textbox
+{
+    display: none;
+}
+
+#ques-type
+{
+    margin-left: 15px !important;
+}
+#sticky-footer
+{
+    background: #232f3e;
+    color: white;
+    padding: 10px;
+}
+
