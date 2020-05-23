@@ -155,3 +155,122 @@ def delete_level(id_):
         flash("Something Went Wrong.Try Again Later.", "danger")
     finally:
         return redirect(url_for("admin.manage_levels"))
+
+        
+@admin_routes.route('/question/add', methods=["GET", "POST"])
+@login_required
+def add_question():
+    if request.method == "POST":
+        try:
+            question = Question()
+            question.level_id = request.form['level']
+            question.question_type = request.form['type']
+            db.session.add(question)
+            db.session.commit()
+
+            if request.form['type'] == "long_text":
+                ques = LongTextQuestion()
+                ques.question_id = question.id
+                ques.question = request.form['question']
+                db.session.add(ques)
+                db.session.commit()
+            elif request.form['type'] == "fuzzy":
+                ques = ShortTextQuestion()
+                ques.question_id = question.id
+                ques.question = request.form['question']
+                ques.answer = request.form['short_answer']
+                db.session.add(ques)
+                db.session.commit()
+            else:
+                ques = MCQQuestion()
+                ques.question_id = question.id
+                ques.question = request.form['question']
+                ques.answer_one = request.form['answer_one']
+                ques.answer_two = request.form['answer_two']
+                ques.answer_three = request.form['answer_three']
+                ques.answer_four = request.form['answer_four']
+                ques.correct = request.form['correct_answer']
+                db.session.add(ques)
+                db.session.commit()
+            flash("Question Added Successfully.", "success")
+        except Exception as e:
+            print(e)
+            flash("Something went wrong,Try Again Later", "danger")
+        finally:
+            return redirect(url_for("admin.add_question"))
+    else:
+        levels = Level.query.all()
+        return render_template("admin/addquestion.html", levels=levels)
+
+@admin_routes.route('/question/manage', methods=["GET", "POST"])
+@login_required
+def manage_questions():
+    questions = Question.query.all()
+    levels = Level.query.all()
+    return render_template("admin/managequestions.html", questions=questions,levels=levels)
+
+@admin_routes.route('/question/edit/<id_>', methods=["GET", "POST"])
+@login_required
+def edit_question(id_):
+    question = Question.query.filter(Question.id==id_).first()
+    if request.method == "POST":
+        try:
+
+            question.level_id = request.form['level']
+            question.question_type = request.form['type']
+            db.session.commit()
+
+            if request.form['type'] == "long_text":
+                ques = LongTextQuestion.query.filter(LongTextQuestion.question_id==question.id).one()
+                ques.question = request.form['question']
+                db.session.commit()
+            elif request.form['type'] == "fuzzy":
+                ques = ShortTextQuestion.query.filter(ShortTextQuestion.question_id==question.id).first()
+                ques.question_id = question.id
+                ques.question = request.form['question']
+                ques.answer = request.form['short_answer']
+                db.session.commit()
+            elif request.form['type'] == "mcq":
+                ques = MCQQuestion.query.filter(MCQQuestion.question_id==question.id).first()
+                ques.question_id = question.id
+                ques.question = request.form['question']
+                ques.answer_one = request.form['answer_one']
+                ques.answer_two = request.form['answer_two']
+                ques.answer_three = request.form['answer_three']
+                ques.answer_four = request.form['answer_four']
+                ques.correct = request.form['correct_answer']
+                db.session.commit()
+            flash("Question Updated Successfully.", "success")
+        except Exception as e:
+            flash("Something went wrong,Try Again Later", "danger")
+        finally:
+            return redirect(url_for("admin.edit_question",id_=id_))
+    else:
+        levels = Level.query.all()
+        mcq = MCQQuestion.query.filter(MCQQuestion.question_id==question.id).first()
+        fuzzy = ShortTextQuestion.query.filter(ShortTextQuestion.question_id==question.id).first()
+        return render_template("admin/editquestion.html", levels=levels,question=question,mcq=mcq,fuzzy=fuzzy)
+
+@admin_routes.route('/question/delete/<id_>', methods=["GET", "POST"])
+@login_required
+def delete_question(id_):
+    try:
+        question = Question.query.filter(Question.id==id_).one()
+        q= None
+        if question.questiontype == "FUZZY":
+            q = ShortTextQuestion.query.filter(ShortTextQuestion.question_id==question.id).first()
+        elif question.questiontype == "MCQ":
+            q = MCQQuestion.query.filter(MCQQuestion.question_id==question.id).first()
+        elif question.questiontype == "LONG_TEXT":
+            q = LongTextQuestion.query.filter(LongTextQuestion.question_id==question.id).first()
+
+        db.session.delete(q)
+        db.session.delete(question)
+        db.session.commit()
+        flash("Question Deleted Successfully.", "success")
+    except Exception as e:
+        print(e)
+        flash("Something Went Wrong,Try again later.","danger")
+    finally:
+
+        return redirect(url_for("admin.manage_questions"))

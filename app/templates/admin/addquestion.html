@@ -1,0 +1,196 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/txt/css/froala_editor.css">
+<link rel="stylesheet" href="/static/txt/css/froala_style.css">
+ <div class="container">
+        <h1 class="mt-5"><i class="fa fa-question-circle"></i> Question<small class="ml-4">(Add Question)</small></h1>
+        <hr class="mb-2"/>
+        <div class="py-5">
+            <form action="" class="form" method="post" onsubmit="return checkFields();">
+                 <div class="form-group">
+                    <label for="=level">Level</label>
+                    <select name="level" id="level" class="form-control" required>
+                        <option selected value="">Select The Level</option>
+                        {% for i in levels %}
+                            <option value="{{ i.id }}">{{ i.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                        <label for="type">Question Type</label>
+                        <select name="type" id="type" class="form-control" required>
+                            <option selected value="">Select The Question Type</option>
+                            <option value="mcq">Multiple Choice Question</option>
+                            <option value="long_text">Long Text Question</option>
+                            <option value="fuzzy">Fuzzy Question</option>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_question">Question</label>
+                    <textarea id="id_question" name="question" ></textarea>
+                    <div class="text-danger" id="question_msg"></div>
+                </div>
+                <div class="" id="answer-box">
+                    <div id="mcq">
+                         <div class="form-group">
+                        <label for="id_answer_one">Answer One</label>
+                        <textarea id="id_answer_one" name="answer_one" ></textarea>
+                         <div class="text-danger" id="answer_one_msg"></div>
+
+                    </div>
+                        <div class="form-group">
+                            <label for="id_answer_two">Answer Two</label>
+                            <textarea id="id_answer_two" name="answer_two" ></textarea>
+                            <div class="text-danger" id="answer_two_msg"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_answer_three">Answer Three</label>
+                            <textarea id="id_answer_three" name="answer_three" ></textarea>
+                            <div class="text-danger" id="answer_three_msg"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_answer_four">Answer Four</label>
+                            <textarea id="id_answer_four" name="answer_four"></textarea>
+                            <div class="text-danger" id="answer_four_msg"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="correct_answer">Correct Answer</label>
+                            <select name="correct_answer" id="correct_answer" class="form-control">
+                                <option selected disabled value="">Select The Correct Answer</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div id="short">
+                        <div class="form-group">
+                        <label for="short_answer">Short Answer</label>
+                        <textarea class="form-control" id="short_answer" name="short_answer"></textarea>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <input type="submit" value="Add Question" class="btn btn-outline-warning">
+            </form>
+        </div>
+    </div>
+<script  src="/static/jquery.js"></script>
+<script  src="/static/txt/js/froala_editor.min.js"></script>
+<script  src="/static/txt/js/plugins/link.min.js"></script>
+      <script>
+      //Function to invoke the text editor.
+    (function () {
+      new FroalaEditor('#id_answer_one', {toolbarInline: false})
+      new FroalaEditor('#id_question', {toolbarInline: false})
+      new FroalaEditor('#id_answer_two', {toolbarInline: false})
+      new FroalaEditor('#id_answer_three', {toolbarInline: false})
+      new FroalaEditor('#id_answer_four', {toolbarInline: false})
+
+    })();
+
+      //Function For Validate All The Fields
+      function checkFields()
+      {
+          let validate = true;
+          if($("#type").val()=="long_text")
+          {
+              if($("#id_question").val()=="")
+                {
+                  $("#question_msg").html("Enter Your Question Here.This Field Can't Be Empty");
+                  validate =  false;
+                }
+
+            return validate;
+          }
+          else if($("#type").val()=="fuzzy")
+          {
+                if($("#id_question").val()=="")
+                {
+                  $("#question_msg").html("Enter Your Question Here.This Field Can't Be Empty");
+                  validate =  false;
+                }
+                 if($("#short_answer").val()=="")
+                  {
+                      alert("Short Answer Value Can't Be Empty.");
+                      validate = false;
+                  }
+
+                return validate;
+          }
+
+          //Check for question
+
+          //Blank All The Messages
+          $("#question_msg").html("");
+          $("#answer_one_msg").html("");
+          $("#answer_two_msg").html("");
+          $("#answer_three_msg").html("");
+          $("#answer_four_msg").html("");
+
+          if($("#id_question").val()=="")
+          {
+              $("#question_msg").html("Enter Your Question Here.This Field Can't Be Empty");
+              validate =  false;
+          }
+          else if($("#id_answer_one").val()=="")
+          {
+              $("#answer_one_msg").html("Enter Your Answer One Option Here.This Field Can't Be Empty");
+              validate =  false;
+          }
+          else if($("#id_answer_two").val()=="")
+          {
+                $("#answer_two_msg").html("Enter Your Answer Two Option Here.This Field Can't Be Empty");
+                validate =  false;
+          }
+          else if($("#id_answer_three").val()=="")
+          {
+                $("#answer_three_msg").html("Enter Your Answer Three Option Here.This Field Can't Be Empty");
+                validate =  false;
+          }
+          else if($("#id_answer_four").val()=="")
+          {
+                $("#answer_four_msg").html("Enter Your Answer Four Option Here.This Field Can't Be Empty");
+                validate =  false;
+          }
+
+          else if($("#correct_answer").val()=="" || $("#correct_answer").val()==null)
+          {
+               alert("Correct Answer Field Can't Be Empty");
+               validate =  false;
+          }
+
+          if(validate)
+          {
+              return true;
+          }
+          else
+          {
+              return  false;
+          }
+      }
+      $("#type").change(function(){
+         if($(this).val()=="" || $(this).val()=="long_text")
+         {
+            $("#mcq").css("display","none");
+            $("#short").css("display","none");
+         }
+         else if($(this).val()=="mcq")
+         {
+            $("#mcq").css("display","block");
+            $("#short").css("display","none");
+         }
+         else if($(this).val()=="fuzzy")
+         {
+             $("#mcq").css("display","none");
+            $("#short").css("display","block");
+         }
+      });
+  </script>
+{% endblock %}
