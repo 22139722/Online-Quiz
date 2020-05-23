@@ -245,3 +245,29 @@ def user_register():
 
     else:
         return render_template("user/register.html")
+
+
+
+
+@user_routes.route('/scoreboard')
+@login_required
+def scoreboard():
+    scoreboard_ = UserScoreBoard.query.filter(
+        UserScoreBoard.user_id == json.loads(session['quizuser'])['user_id']).all()
+    return render_template("user/scoreboard.html", scoreboard=scoreboard_)
+
+
+@user_routes.route('/scoreboard/<id_>')
+@login_required
+def scoreboard_detail(id_):
+    board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
+    details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
+    return render_template("user/scoreboarddetails.html", details=details, board_id=board.id, board=board)
+
+
+@user_routes.route('/api/board/<id_>/', methods=["GET", "POST"])
+def get_score_board_detail(id_):
+    board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
+    details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
+    result = [d.serialize for d in details]
+    return jsonify(result), 200

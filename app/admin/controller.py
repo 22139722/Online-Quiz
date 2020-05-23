@@ -390,3 +390,73 @@ def manage_users():
 def admin_logout():
     del session['quizadmin']
     return redirect(url_for("admin.login"))
+
+
+#SCOREBOARD ROUTES
+
+@admin_routes.route('/scoreboard')
+@login_required
+def scoreboard():
+    users = User.query.all()
+    levels = Level.query.all()
+    scoreboard_ = UserScoreBoard.query.all()
+    return render_template("admin/scoreboard.html",scoreboard=scoreboard_,users=users,levels=levels)
+
+@admin_routes.route('/scoreboard/<id_>',methods=["GET","POST"])
+@login_required
+def scoreboard_detail(id_):
+
+    if request.method == "POST":
+        print(request.form)
+        for i in request.form:
+            if len(i.split("res-"))>0:
+                try:
+
+                    det = ScoreBoardDetail.query.filter(ScoreBoardDetail.id == int(i.split("res-")[1])).one()
+                    det.obtained_marks = request.form[i]
+                    print(det)
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+        flash("ScoreBoard Updated SUccessfully","success")
+        return redirect(url_for("admin.scoreboard_detail",id_=id_))
+    else:
+        board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
+        details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
+        return render_template("admin/scoreboarddetails.html",details=details,board_id=board.id,
+                                                              board=board)
+
+
+@admin_routes.route('/api/board/<id_>/',methods=["GET","POST"])
+def get_score_board_detail(id_):
+    board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
+    details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
+    print(details)
+    result = [d.serialize for d in details]
+    return jsonify(result), 200
+
+@admin_routes.route('/api/board/<user_id>/<level_id>',methods=["GET","POST"])
+def filter_score_board_detail(user_id,level_id):
+    board = db.session.query(UserScoreBoard).filter(or_(UserScoreBoard.user_id == user_id,UserScoreBoard.level_id==level_id)).all()
+    result = [d.serialize for d in board]
+    return jsonify(result), 200
+
+@admin_routes.route('/api/board/delete/<board_id>/',methods=["GET","POST"])
+def delete_score_board(board_id):
+    board = UserScoreBoard.query.filter(UserScoreBoard.id == board_id).first()
+    details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == board_id).all()
+    for i in details:
+        db.session.delete(i)
+        db.session.commit()
+
+    db.session.delete(board)
+    db.session.commit()
+    flash("Score Board Deleted Successfully.","danger")
+    return redirect(url_for("admin.scoreboard"))
+
+@admin_routes.route('/api/questions/<level_id>/',methods=["GET","POST"])
+def get_questions_level_wise(level_id):
+    questions = Question.query.filter(Question.level_id==level_id)
+    res = [i.serialize for i in questions]
+    return jsonify(res),200
+

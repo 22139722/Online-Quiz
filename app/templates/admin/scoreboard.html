@@ -1,0 +1,131 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="table-responsive">
+        <h1 class="mt-5"><i class="fa fa-tasks"></i> Score Board<small class="ml-4">(Quiz ScoreBoard)</small></h1>
+        <hr class="mb-2"/>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <select name="user_select" id="user_select" class="form-control">
+                    <option value="0">Select The Name Of The User</option>
+                    {% for i in users %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="level_select" id="level_select" class="form-control">
+                    <option value="0">Select The Level</option>
+                    {% for i in levels %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+             <div class="col-md-4">
+                 <button class="btn btn-primary" id="find" style="cursor: pointer;"><i class="fa fa-search"></i> Find</button>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sr No</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Level</th>
+                    <th>Total Questions</th>
+                    <th>Total Marks</th>
+                    <th>Marks Obtained</th>
+                    <th>View Details</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="board-tbody">
+                {% for board in scoreboard %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ board.user.name }}</td>
+                        <td>{{ board.user.email }}</td>
+                        <td>{{ board.get_test_date }}</td>
+                        <td>{{ board.get_test_time }}</td>
+                        <td>{{ board.level.name }}</td>
+                         <td>{{ board.total_questions }}</td>
+                        <td>{{ board.total_marks }}</td>
+                        <td>{{ board.obtained_marks }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.scoreboard_detail',id_=board.id) }}">
+                            <button class="btn btn-primary"><i class="fa fa-list"></i> View Details</button>
+                            </a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('admin.delete_score_board',board_id=board.id) }}" onsubmit="return confirmDelete();">
+                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Delete </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function confirmDelete()
+{
+    var conf = confirm("Are you sure you want to delete? Deleted Scorecard will not be able to retrieve form User And Admin Agian");
+    if(conf)
+    {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+$(document).ready(function(){
+    $("#find").click(function () {
+        var url = "{{ url_for('admin.filter_score_board_detail',user_id='user_id',level_id='level_id') }}";
+        url = url.replace("user_id",$("#user_select").val());
+        url = url.replace("level_id",$("#level_select").val());
+        $.ajax({
+            "url":url,
+            "method":"POST",
+            success:function (res) {
+                $("#board-tbody").html("");
+                let index=1;
+                res.forEach(elem=>{
+                    var del_url = "{{ url_for('admin.delete_score_board',board_id='board_id') }}";
+                    del_url = del_url.replace('board_id',elem.id);
+                    var board_detail_url = "{{ url_for('admin.scoreboard_detail',id_='board_id') }}";
+                    board_detail_url = board_detail_url.replace('board_id',elem.id);
+                   var tr = `<tr>
+                                <td>${index}</td>
+                                <td>${elem.name}</td>
+                                <td>${elem.email}</td>
+                                <td>${elem.date}</td>
+                                <td>${elem.time}</td>
+                                <td>${elem.level}</td>
+                                <td>${elem.total_questions}</td>
+                                <td>${elem.total_marks}</td>
+                                <td>${elem.obtained_marks}</td>
+                                <td>
+                                    <a href="${board_detail_url}">
+                                    <button class="btn btn-primary"><i class="fa fa-list"></i> View Details</button>
+                                    </a>
+                                </td>
+                                <td>
+                                <form action="${del_url}" onsubmit="return confirmDelete();">
+                                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Delete </button>
+                                </form>
+                        </td>
+                            </tr>`;
+                   console.log(tr);
+                   $("#board-tbody").append(tr);
+                   index = index + 1;
+                });
+            }
+        })
+    })
+});
+</script>
+{% endblock %}
