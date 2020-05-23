@@ -1,0 +1,61 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="table-responsive">
+        <h1 class="mt-5"><i class="fa fa-level-up"></i> Levels<small class="ml-4">(Level Details)</small></h1>
+        <hr class="mb-2"/>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sr No</th>
+                    <th>Level Name</th>
+                    <th>Level Priority</th>
+                    <th>Level Image</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                    {% for i in levels %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ i.name }}</td>
+                            <td>{{ i.priority }}</td>
+                            <td>
+                                <img src="{{ url_for('static',filename=i.image) }}" class="img-fluid"
+                                     style="max-height: 150px !important;max-width: 150px !important;">
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_level',id_=i.id) }}">
+                                    <button class="btn btn-warning">
+                                        <i class="fa fa-edit"></i> Update</button>
+                                </a>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.delete_level',id_=i.id) }}" method="post" onsubmit="return deleteLevel('{{ i.name }}');">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="fa fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+    <script>
+        function deleteLevel(level) {
+
+           c =  confirm("Are you sure you want to delete the level with name "+level);
+            if (c)
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+{% endblock %}
