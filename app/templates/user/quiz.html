@@ -1,0 +1,343 @@
+{% extends 'user/base.html' %}
+{% block content %}
+<div class="container-fluid quiz-page">
+    <!--- THIS ROW CONTAIN ALL THE INSTRUCTIONS AND TIMING --->
+   <div class="row mt-3">
+      <div class="col-md-2"></div>
+      <div class="col-md-6">
+         <div class="row">
+            <div class="col-md-10">
+               <h1 class="float-left"><u>Instructions</u></h1>
+            </div>
+            <div class="col-md-2">
+               <span class="timer "><b><i class="fa fa-clock-o"></i></b><b class="js-timeout"></b></span>
+            </div>
+         </div>
+         <hr/>
+         <div class="row">
+            <ul>
+                <li>You Should Answer Atleast One Question.</li>
+               <li>There is No Negative Marking</li>
+               <li>Every Unanswered question mark zero marks.</li>
+               <li>Marks Will Be evaluated after the Submision Of Test.</li>
+               <li>You will Be Provided 1Min For Each Question.1Min*No of questions for the whole quiz.</li>
+               <li>Answer Sheet Will Automatically Submitted After Completion Of Time.</li>
+               <li>Response Sheet is to track that which question is answered or which is not.</li>
+                <li>All the short answer shoudl be of one word only.Only First word will count as a respone.</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+
+    <!--- THIS ROW CONTAIN THE QUIZ QUESTIONS/ANSWERS --->
+    <div class="row mt-md-3 response-sheet-div">
+
+      <div class="col-md-2"></div>
+      <div class="col-md-7 card ">
+          <div class="card-header">
+              <b>Question Type:</b><span id="ques-type"></span>
+          </div>
+          <div class="card-body p-4">
+               <div class="row">
+              <button class="btn btn-warning col-md-4 mx-auto" id="startquiz"><i class="fa fa-clock-o"></i> Start Quiz</button>
+          </div>
+
+          <div id="answer_sheet">
+              <div class="row" >
+               <div class="col-md-1"> <b id="question_num"> </b></div>
+               <div class="col-md-10" id="question"></div>
+            </div>
+              <div id="mcq">
+
+                    <div class="row">
+                       <div class="col-md-1"> <b> <input type="radio" name="answer" value="1" ></b></div>
+                       <div class="col-md-10" id="answer_one"></div>
+                    </div>
+                    <div class="row">
+                       <div class="col-md-1"><input type="radio" name="answer" value="2" ></div>
+                       <div class="col-md-10" id="answer_two"></div>
+                    </div>
+                    <div class="row">
+                       <div class="col-md-1"><input type="radio" name="answer" value="3" ></div>
+                       <div class="col-md-10" id="answer_three"></div>
+                    </div>
+                    <div class="row" >
+                       <div class="col-md-1"><input type="radio" name="answer" value="4" ></div>
+                       <div class="col-md-10" id="answer_four"></div>
+                    </div>
+              </div>
+              <div id="textbox">
+                    <textarea class="form-control" name="answer" id="textbox-ans" placeholder="Enter Your Answer Here"></textarea>
+              </div>
+
+            <div class="row mt-3" >
+               <div class="offset-md-4">
+                  <div class="btn-group">
+                     <button class="btn btn-warning" id="prev">Previous</button>
+                     <button class="btn btn-primary" id="next">Next</button>
+                     <button class="btn btn-success" id="sub">Submit</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+          </div>
+
+      </div>
+      <div class="col-md-3 response-sheet">
+      <div class="row">
+          <h3><u>Response Sheet</u></h3>
+      </div>
+      <div class="row">
+          <div class="col-md-2 bg-primary bg"></div><div class="col-md-10"><b>Unanswered</b></div>
+      </div>
+      <div class="row">
+          <div class="col-md-2 bg-warning bg"></div><div class="col-md-10"><b>Answered</b></div>
+      </div>
+
+        <div class="row pt-2">
+         {% for i in questions %}
+         <div class="col-md-1 bg-primary p-2 m-1 ques-num" id="res-{{ loop.index0 }}">{{ loop.index }}</div>
+         {% endfor %}
+        </div>
+      </div>
+   </div>
+</div>
+
+<form action="" method="post" id="quizForm">
+   <input type="hidden" name="response" value="" id="response">
+</form>
+<script>
+   $(document).ready(function()
+   {
+
+        function submitQuiz()
+        {
+            $('#quizForm').submit();
+        }
+
+        $("#startquiz").click(function () {
+            $(this).hide();
+           countdown();
+            $("#answer_sheet").css("opacity","1");
+        });
+
+       $("#answer_sheet").css("opacity","0.2");
+
+
+
+        //     START QUIZ COUNTDOWN
+
+           var interval;
+           function countdown() {
+             clearInterval(interval);
+             interval = setInterval( function() {
+                 var timer = $('.js-timeout').html();
+                 timer = timer.split(':');
+                 var minutes = timer[0];
+                 var seconds = timer[1];
+                 seconds -= 1;
+                 if (minutes < 0) return;
+                 else if (seconds < 0 && minutes != 0) {
+                     minutes -= 1;
+                     seconds = 59;
+                 }
+                 else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
+
+                 $('.js-timeout').html(minutes + ':' + seconds);
+
+                 if (minutes == 0 && seconds == 0) {
+                     submitQuiz();
+                     clearInterval(interval);
+                 }
+             }, 1000);
+           }
+       //     END QUIZ COUNTDOWN
+
+       questions = [];
+       response = [];
+       current_ques_index = null;
+       function renderQuestion()
+       {
+
+           question_index = current_ques_index;
+           question_type = questions[question_index].type;
+           var question = questions[question_index].question;
+
+           //CHECK WHEATHER A QUESTION IS MCQ OR OTHER
+           if(question_type=="MCQ")
+           {
+               $("#ques-type").html("MCQ Question(Chose One From 4)");
+               // IF MCQ THEN DISPLAY IT MCQ WISE
+               $("#mcq").css("display","block");
+               $("#textbox").css("display","none");
+
+               var answer_one = questions[question_index].mcq.answer_one;
+               var answer_two = questions[question_index].mcq.answer_two;
+               var answer_three = questions[question_index].mcq.answer_three;
+               var answer_four = questions[question_index].mcq.answer_four;
+               $("#answer_one").html(answer_one);
+               $("#answer_two").html(answer_two);
+               $("#answer_three").html(answer_three);
+               $("#answer_four").html(answer_four);
+               $("#question_num").html(parseInt(question_index)+1);
+           }
+            else if(question_type=="FUZZY")
+           {
+               $("#ques-type").html("SHORT Answer Question(One Word Only)");
+               $("#mcq").css("display","none");
+               $("#textbox").css("display","block");
+               $("#question_num").html(parseInt(question_index)+1);
+           }
+           else if(question_type=="LONG_TEXT")
+           {
+               $("#ques-type").html("Long Answer Question(NO LIMIT)");
+               $("#mcq").css("display","none");
+               $("#textbox").css("display","block");
+               $("#question_num").html(parseInt(question_index)+1);
+           }
+
+            $("#question").html(question);
+
+           //CHECK IF ANSWER EXIST OR NOT
+           var res_exist = response.find((elem)=>elem.question_id==questions[question_index].id);
+
+           //IF ANSWER DOESNOT EXIST DESELECT THE RADIO BUTTON
+           if(!res_exist)
+           {
+               //CHECK THE QUESTION TYPE FIRST
+               //if its mcq
+               if(question_type=="MCQ")
+               {
+                    $("input[name='answer']").prop("checked",false);
+               }
+               else
+               {
+
+                   $("#textbox-ans").val("");
+               }
+
+           }
+           else
+           {
+                if(question_type=="MCQ")
+               {
+                     $(`input[name='answer'][value='${res_exist.answer}']`).prop("checked",true);
+               }
+               else
+               {
+
+                   $("#textbox-ans").val(res_exist.answer);
+               }
+
+
+           }
+
+       }
+       $("#textbox-ans").keyup(function () {
+           question_id = questions[current_ques_index].id;
+           var temp = {'question_id':question_id,'answer':($(this).val().toString())};
+           var res_exist = response.find((elem)=>elem.question_id==question_id);
+           if(res_exist)
+           {
+                  response = response.map((elem)=>{
+                   if(elem.question_id==question_id)
+                   {
+                       elem.answer = ($(this).val().toString());
+                       return elem;
+                   }
+                   else
+                   {
+                       return elem;
+                   }
+                       });
+
+           }
+           else
+           {
+                response.push(temp);
+           }
+           $(`#res-${current_ques_index}`).removeClass("bg-primary");
+           $(`#res-${current_ques_index}`).addClass("bg-warning");
+           $("#response").val(JSON.stringify(response));
+       });
+       $("input[name='answer']").change(function () {
+           question_id = questions[current_ques_index].id;
+           var temp = {'question_id':question_id,'answer':parseInt($(this).val())};
+           var res_exist = response.find((elem)=>elem.question_id==question_id);
+           if(res_exist)
+           {
+               response = response.map((elem)=>{
+                   if(elem.question_id==question_id)
+                   {
+                       elem.answer = parseInt($(this).val());
+                       return elem;
+                   }
+                   else
+                   {
+                       return elem;
+                   }
+                       });
+
+           }
+           else
+           {
+                response.push(temp);
+           }
+           $(`#res-${current_ques_index}`).removeClass("bg-primary");
+           $(`#res-${current_ques_index}`).addClass("bg-warning");
+           $("#response").val(JSON.stringify(response));
+
+       });
+       $("#prev").click(function () {
+           if(current_ques_index==0)
+           {
+               alert("You are Already Answering The First Question.You can't go to previous one.");
+           }
+           else
+           {
+               current_ques_index-=1;
+               renderQuestion();
+           }
+
+       });
+       $("#next").click(function () {
+           if(current_ques_index==(questions.length-1))
+           {
+               alert("You are Already Answering The Last Question.You can't go to Next one.Submit The Quiz if your done.");
+           }
+           else
+           {
+               current_ques_index += 1;
+               renderQuestion();
+           }
+
+       });
+
+       $.ajax({
+           url:"{{ url_for('user.get_questions',quizid=quiz_id) }}",
+           method:"POST",
+           success:function (res) {
+               res.forEach((elem)=>questions.push(elem));
+               current_ques_index = 0;
+               $('.js-timeout').text(`${questions.length}:00`);
+               renderQuestion();
+           }
+       });
+
+        $("#sub").click(function () {
+
+            var ask_confirmation = confirm("Are you sure you want to submit this Quiz");
+            if(ask_confirmation)
+            {
+                submitQuiz();
+            }
+
+
+        });
+
+
+   });
+
+
+</script>
+{% endblock %}
