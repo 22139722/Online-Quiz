@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{  url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{  url_for('static', filename='style.css') }}">
+{#    <link rel="stylesheet" href="{{  url_for('static', filename='fontawesome.css') }}">#}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{{ url_for('static',filename='jquery.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row" style="height: 100vh;">
+            <div class="card m-auto signup-card">
+                <div class="card-header">
+                    <img src="{{  url_for('static', filename='quiz-logo.png') }}" class="img-fluid">
+                </div>
+                <div class="card-body">
+                     <section class="container mt-3">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                             {% if messages %}
+                                   {% for category, message in messages %}
+                                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                                   {% endfor %}
+                             {% endif %}
+                        {% endwith %}
+                     </section>
+                    <form action="{{ url_for('user.user_register') }}" class="form loginform" method="post">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="user_name" id="name" placeholder="Enter Your Name"
+                                   class="form-control" required>
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-Mail</label>
+                            <input type="email" name="user_email" id="email" placeholder="Enter Your E-mail"
+                                   class="form-control" required>
+                            <i class="fa fa-envelope"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" name="user_password" id="password" placeholder="Enter Your Password"
+                                   class="form-control" required>
+                            <i class="fa fa-key"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="cpassword">Confirm Password</label>
+                            <input type="password" name="user_cpassword" id="cpassword" placeholder="Confirm Your Password"
+                                   class="form-control" required>
+                            <i class="fa fa-key"></i>
+                        </div>
+                        <input type="submit" value="Sign Up" class="btn btn btn-primary form-control">
+                    </form>
+                </div>
+                <div class="card-footer login-card-footer">
+                    <p>Enter Your Credentials To Sign Up</p>
+                    <br/>
+                    <b class="login-foot-nau">Already a User?</b><a href="{{ url_for('user.login_page') }}">Sign In? </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
