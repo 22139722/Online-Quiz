@@ -1,0 +1,39 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="admin-homepage">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h1><i class="fa fa-user"></i> Users</h1>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{users}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h1><i class="fa fa-level-up"></i> Levels</h1>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{levels}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h1><i class="fa fa-question-circle"></i> Questions</h1>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{questions}}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
