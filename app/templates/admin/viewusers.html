@@ -1,0 +1,62 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="table-responsive">
+        <h1 class="mt-5"><i class="fa fa-user"></i>Users<small class="ml-4">(Users Details)</small></h1>
+        <hr class="mb-2"/>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sr No</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Update Profile</th>
+                    <th>Update Password</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <a href="{{ url_for("admin.edit_user_profile",id_=user.id) }}">
+                                <button class="btn btn-warning">
+                                <i class="fa fa-edit"></i> Update Profile</button>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for("admin.change_user_password",id_=user.id) }}">
+                                <button class="btn btn-warning">
+                                <i class="fa fa-edit"></i> Update Password</button>
+                            </a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('admin.delete_user',id_=user.id) }}" method="post" onsubmit="return deleteUser('{{ user.name }}');">
+                            <button class="btn btn-danger">
+                                <i class="fa fa-times"></i> Delete User</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function deleteUser(user) {
+
+       c =  confirm("Are you sure you want to delete the User with name "+user+".Deleteing the user will permenetly delete all the previous quiz records of the user.");
+        if (c)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}

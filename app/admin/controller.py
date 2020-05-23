@@ -274,3 +274,119 @@ def delete_question(id_):
     finally:
 
         return redirect(url_for("admin.manage_questions"))
+
+# USER CRUD ROUTES
+@admin_routes.route('/user/add', methods=["GET", "POST"])
+@login_required
+def add_user():
+    if request.method == "POST":
+        try:
+            name = request.form['user_name']
+            email = request.form['user_email']
+            password = request.form['user_password']
+            cpassword = request.form['user_cpassword']
+            if name == "":
+                flash("Name Of User Can't Be Empty.", "danger")
+            elif email == "":
+                flash("Email Of User Can't Be Empty.", "danger")
+            elif password == "":
+                flash("Password Of User Can't Be Empty.", "danger")
+            elif password != cpassword:
+                flash("Password And Confirm Password Doesn't Match.", "danger")
+            elif User.query.filter(User.email == email).count() > 0:
+                flash("This Email Is Already Exist", "danger")
+            else:
+                user = User(name=name, email=email, password=password)
+                db.session.add(user)
+                db.session.commit()
+                flash("User Created Successfully", "success")
+        except Exception as e:
+            print(e)
+            flash("Something Went Wrong.Try Again Later", "danger")
+        finally:
+            return redirect(url_for("admin.add_user"))
+    else:
+        return render_template("admin/adduser.html")
+
+
+@admin_routes.route('/user/editpro/<id_>', methods=["GET", "POST"])
+@login_required
+def edit_user_profile(id_):
+    user = User.query.filter(User.id == id_).first()
+    if request.method == "POST":
+        try:
+
+            name = request.form['user_name']
+            email = request.form['user_email']
+            if name == "":
+                flash("Name Of User Can't Be Empty.", "danger")
+            elif email == "":
+                flash("Email Of User Can't Be Empty.", "danger")
+            elif User.query.filter(User.email == email, User.id != id_).count() > 0:
+                flash("This Email Is Already Taken", "danger")
+            else:
+                user.name = name
+                user.email = email
+                db.session.commit()
+                flash("User Profile Updated Successfully.", "success")
+        except:
+            flash("Something Went Wrong.Try Again Later", "danger")
+        finally:
+            return redirect(url_for("admin.edit_user_profile", id_=id_))
+    else:
+        return render_template("admin/editprofile.html", user=user)
+
+@admin_routes.route('/user/delete/<id_>', methods=["GET", "POST"])
+@login_required
+def delete_user(id_):
+    try:
+        user = User.query.filter(User.id==id_).one()
+        db.session.delete(user)
+        db.session.commit()
+        flash("User deleted Successfully.","success")
+    except:
+        flash("Something Went Wrong.Try Again Later.","danger")
+    finally:
+        return redirect(url_for("admin.manage_users"))
+
+@admin_routes.route('/user/editpassword/<id_>', methods=["GET", "POST"])
+@login_required
+def change_user_password(id_):
+    user = User.query.filter(User.id == id_).first()
+    if request.method == "POST":
+        try:
+            password = request.form['user_password']
+            cpassword = request.form['user_cpassword']
+            if password == "":
+                flash("Password Of User Can't Be Empty.", "danger")
+            if cpassword == "":
+                flash("Password Of User Can't Be Empty.", "danger")
+            elif password != cpassword:
+                flash("Password And Confirm Password Doesn't Match.", "danger")
+            else:
+                user.password = signals.generate_password(password)
+                db.session.commit()
+                flash("User Password Updated Successfully.", "success")
+        except:
+            flash("Something Went Wrong.Try Again Later", "danger")
+        finally:
+            return redirect(url_for("admin.change_user_password", id_=id_))
+
+    return render_template("admin/changeuserpassword.html", user=user)
+
+
+
+
+
+@admin_routes.route('/user/manage')
+@login_required
+def manage_users():
+    users = User.query.all()
+    print(users)
+    return render_template("admin/viewusers.html", users=users)
+
+@admin_routes.route('/logout')
+@login_required
+def admin_logout():
+    del session['quizadmin']
+    return redirect(url_for("admin.login"))
