@@ -1,0 +1,98 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="table-responsive">
+        <h1 class="mt-5">Questions<small class="ml-4">(Question Details)</small></h1>
+        <hr class="mb-2"/>
+        <div class="row my-2">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Level</label>
+                    <select name="" id="search_box" class="form-control">
+                        {% for i in levels %}
+                            <option value="{{i.name}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label>Click Here To Search</label>
+                <button onclick="findLevels();" class="btn btn-primary form-control">Search</button>
+            </div>
+        </div>
+        <table class="table table-bordered" id="myTable">
+            <thead>
+                <tr>
+                    <th>Sr No</th>
+                    <th>Level</th>
+                    <th>Question</th>
+                    <th>Question Type</th>
+                    <th>Update Question</th>
+                    <th>Delete Question</th>
+                </tr>
+            </thead>
+            <tbody id="tablebody">
+                {% for question in questions %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ question.level.name}}</td>
+
+                        <td>
+                            {{ question.question | safe }}
+                        </td>
+                        <td>{{ question.questiontype  }}</td>
+                        <td>
+                            <a href="{{ url_for("admin.edit_question",id_=question.id) }}">
+                                <button class="btn btn-warning">
+                                <i class="fa fa-edit"></i> Update Question</button>
+                            </a>
+                        </td>
+
+                        <td>
+                            <form action="{{ url_for('admin.delete_question',id_=question.id) }}" method="post" onsubmit="return delQuestion();">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fa fa-times"></i> Delete Question</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+   function findLevels() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search_box");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+    function delQuestion()
+    {
+        var con = confirm("Are you sure you want to delete?");
+        if(con)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
