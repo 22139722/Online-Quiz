@@ -1,0 +1,75 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="mt-5"><i class="fa fa-level-up"></i>Level<small class="ml-4">(Add Level)</small></h1>
+        <hr class="mb-2"/>
+        <div class="py-5 add-user-box">
+            <p><b>*Priority is use to arrangement of the Levels.Who have higer priority come later.</b></p>
+            <form action="{{ url_for('admin.add_level') }}" class="form" method="post" enctype="multipart/form-data" onsubmit="return checkFields();">
+                <div class="form-group">
+                    <label for="level_name">Level Name</label>
+                    <input type="text" name="level_name" id="level_name" class="form-control"
+                           placeholder="Enter Your Level Name Here" required>
+                </div>
+                 <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label for="select_image">Level Image</label>
+                            <input type="file" name="image" id="select_image" class="form-control"
+                                    required accept="image/*">
+                             <div class="text-danger mt-1 d-none"  id="image_error"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                         <img src="/image.png" alt="Select The Image" id="id_image" class="img-fluid"
+                              height="150" width="150">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="level_priority">Level Priority</label>
+                    <input type="number" name="priority" id="level_priority" class="form-control"
+                           placeholder="Enter Your Level Priority Here" required>
+                </div>
+                <input type="submit" value="Add Level" class="btn btn-outline-warning">
+            </form>
+        </div>
+    </div>
+    <script>
+    function checkFields()
+    {
+        //CHECK FILE FORMAT
+        var file_type = document.getElementById("select_image").files[0].type.split("/")[0];
+        if(file_type!="image")
+        {
+            return false;
+        }
+
+        return true;
+    }
+    $(document).ready(function () {
+        $("#select_image").on("change",function(e){
+            type = e.target.files[0].type;
+            if (type.split("/")[0]=="image")
+            {
+                $(this).removeClass("is-invalid");
+                $("#image_error").html("");
+                $("#image_error").addClass("d-none");
+                $("#image_error").removeClass("d-block");
+                $("#id_image").height("150px");
+                $("#id_image").width("150px");
+                file = URL.createObjectURL(e.target.files[0]);
+                $("#id_image").attr("src",file);
+            }
+            else
+            {
+                $(this).addClass("is-invalid");
+                $("#image_error").removeClass("d-none");
+                $("#image_error").addClass("d-block");
+                $("#image_error").html("Enter Correct Format Of Image Only");
+            }
+
+        })
+    });
+    </script>
+{% endblock %}
