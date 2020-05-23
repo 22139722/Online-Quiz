@@ -1,0 +1,260 @@
+{% extends 'user/base.html' %}
+{% block content %}
+<div class="container-fluid quiz-page">
+    <!--- THIS ROW CONTAIN ALL THE INSTRUCTIONS AND TIMING --->
+   <div class="row mt-3">
+      <div class="col-md-2"></div>
+      <div class="col-md-6">
+         <div class="row">
+            <div class="col-md-10">
+               <h1 class="float-left"><u>Instructions</u></h1>
+            </div>
+            <div class="col-md-2">
+               <span class="timer "><b><i class="fa fa-clock-o"></i></b><b class="js-timeout"></b></span>
+            </div>
+         </div>
+         <hr/>
+         <div class="row">
+            <ul>
+                <li>You Should Answer Atleast One Question.</li>
+               <li>There is No Negative Marking</li>
+               <li>Every Unanswered question mark zero marks.</li>
+               <li>Marks Will Be evaluated after the Submision Of Test.</li>
+               <li>You will Be Provided 1Min For Each Question.1Min*No of questions for the whole quiz.</li>
+               <li>Answer Sheet Will Automatically Submitted After Completion Of Time.</li>
+               <li>Response Sheet is to track that which question is answered or which is not.</li>
+                <li>All the short answer shoudl be of one word only.Only First word will count as a respone.</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+
+    <!--- THIS ROW CONTAIN THE QUIZ QUESTIONS/ANSWERS --->
+    <div class="row mt-md-3 response-sheet-div">
+
+      <div class="col-md-2"></div>
+      <div class="col-md-7 card ">
+          <div class="card-header">
+              <b>Question Type:</b><span id="ques-type"></span>
+          </div>
+          <div class="card-body p-4">
+
+
+          <div id="answer_sheet">
+              <div class="row" >
+               <div class="col-md-1"> <b id="question_num"> </b></div>
+               <div class="col-md-10" id="question"></div>
+            </div>
+              <div id="mcq">
+
+                     <div class="row">
+               <div class="col-md-1"><span><b class="sc_res" id="answer_1_res"></b></span></div>
+               <div class="col-md-10" id="answer_one"></div>
+            </div>
+                    <div class="row">
+                       <div class="col-md-1"><span><b class="sc_res" id="answer_2_res"></b></span></div>
+                       <div class="col-md-10" id="answer_two"></div>
+                    </div>
+                    <div class="row">
+                       <div class="col-md-1"><span><b class="sc_res" id="answer_3_res"></b></span></div>
+                       <div class="col-md-10" id="answer_three"></div>
+                    </div>
+                    <div class="row" >
+                       <div class="col-md-1"><span><b class="sc_res" id="answer_4_res"></b></span></div>
+                       <div class="col-md-10" id="answer_four"></div>
+                    </div>
+
+              </div>
+              <div id="textbox">
+                    <textarea class="form-control" name="answer" readonly id="textbox-ans" placeholder="Enter Your Answer Here"></textarea>
+              </div>
+               <div class="row status-row" >
+                       <div class="col-md-1"><span><b>Status:</b></span></div>
+                       <div class="col-md-10" id="status_res"></div>
+                    </div>
+
+            <div class="row mt-3" >
+               <div class="offset-md-4">
+                  <div class="btn-group">
+                     <button class="btn btn-warning" id="prev">Previous</button>
+                     <button class="btn btn-primary" id="next">Next</button>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+          </div>
+
+      </div>
+        <div class="col-md-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ques No</th>
+                        <th>Obtained</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in details %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            {% if i.obtained_marks==None %}
+                                Marks Not Given
+                            {% else %}
+                            {{ i.obtained_marks }}
+                            {% endif %}</td>
+                        <td>{{ i.total_marks }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+   </div>
+</div>
+
+<form action="" method="post" id="quizForm">
+   <input type="hidden" name="response" value="" id="response">
+</form>
+<script>
+   $(document).ready(function()
+   {
+
+        function submitQuiz()
+        {
+            $('#quizForm').submit();
+        }
+
+       questions = [];
+       response = [];
+       current_ques_index = null;
+       function renderQuestion()
+       {
+
+           question_index = current_ques_index;
+           question_type = questions[question_index].type;
+           var question = questions[question_index].question;
+
+           //CHECK WHEATHER A QUESTION IS MCQ OR OTHER
+           if(question_type=="MCQ")
+           {
+                   $("#ques-type").html("MCQ Question(Chose One From 4)");
+                   // IF MCQ THEN DISPLAY IT MCQ WISE
+                   $("#mcq").css("display","block");
+                   $("#textbox").css("display","none");
+
+                   var answer_one = questions[question_index].mcq.answer_one;
+                   var answer_two = questions[question_index].mcq.answer_two;
+                   var answer_three = questions[question_index].mcq.answer_three;
+                   var answer_four = questions[question_index].mcq.answer_four;
+                   $("#answer_one").html(answer_one);
+                   $("#answer_two").html(answer_two);
+                   $("#answer_three").html(answer_three);
+                   $("#answer_four").html(answer_four);
+                   $("#question_num").html(parseInt(question_index)+1);
+                    $(".status-row").css("display","flex");
+                    var correct = questions[question_index].mcq['correct'];
+                    var user_answer = questions[question_index].mcq['user_answer'];
+                    $(".sc_res").each(function () {
+                       $(this).html("");
+                   });
+                    if(correct==user_answer)
+                       {
+                            $(`#answer_${correct}_res`).html("<i class='fa fa-check text-success'></i>");
+                            $("#status_res").html("<i class='fa fa-check text-success'> Correct</i>");
+                       }
+                       else
+                       {
+                           if(user_answer==null)
+                           {
+                               $(`#answer_${correct}_res`).html("<i class='fa fa-check text-success'></i>");
+                               $("#status_res").html("<i class='fa fa-question-circle text-primary'> Unanswered</i>");
+
+                           }
+                           else
+                           {
+                                 $(`#answer_${correct}_res`).html("<i class='fa fa-check text-success'></i>");
+                                $(`#answer_${user_answer}_res`).html("<i class='fa fa-times text-danger'></i>");
+                                $("#status_res").html("<i class='fa fa-times text-danger'> Incorrect</i>");
+
+                           }
+
+
+                       }
+           }
+            else if(question_type=="FUZZY")
+           {
+               $("#ques-type").html("SHORT Answer Question(One Word Only)");
+               $("#mcq").css("display","none");
+               $("#textbox").css("display","block");
+               $("#question_num").html(parseInt(question_index)+1);
+               let fuzzy_ans = questions[question_index].fuzzy.user_answer;
+               $(".status-row").css("display","none");
+               $("#textbox-ans").val(fuzzy_ans);
+           }
+           else if(question_type=="LONG_TEXT")
+           {
+               $("#ques-type").html("Long Answer Question(NO LIMIT)");
+               $("#mcq").css("display","none");
+               $("#textbox").css("display","block");
+               $("#question_num").html(parseInt(question_index)+1);
+               $(".status-row").css("display","none");
+               let long_ans = questions[question_index].long.user_answer;
+               $("#textbox-ans").val(long_ans);
+           }
+
+            $("#question").html(question);
+
+           //CHECK IF ANSWER EXIST OR NOT
+           var res_exist = response.find((elem)=>elem.question_id==questions[question_index].id);
+
+
+
+       }
+
+       $("#prev").click(function () {
+           if(current_ques_index==0)
+           {
+               alert("You are Already Answering The First Question.You can't go to previous one.");
+           }
+           else
+           {
+               current_ques_index-=1;
+               renderQuestion();
+           }
+
+       });
+       $("#next").click(function () {
+           if(current_ques_index==(questions.length-1))
+           {
+               alert("You are Already Answering The Last Question.");
+           }
+           else
+           {
+               current_ques_index += 1;
+               renderQuestion();
+           }
+
+       });
+
+       $.ajax({
+           url:"{{ url_for('user.get_score_board_detail',id_=board_id) }}",
+           method:"POST",
+           success:function (res) {
+               res.forEach((elem)=>questions.push(elem));
+               current_ques_index = 0;
+               $('.js-timeout').text(`${questions.length}:00`);
+               renderQuestion();
+           }
+       });
+
+
+
+
+   });
+
+
+</script>
+{% endblock %}
