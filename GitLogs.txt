@@ -1,0 +1,180 @@
+GIT LOGS: 
+
+commit 52c2b92baf31dcef0cebae7c998283a2ee1fd851 (HEAD -> master, origin/master, origin/HEAD)
+Author: mkaur <64572533+mkaur233@users.noreply.github.com>
+Date:   Mon May 25 00:08:52 2020 +0800
+
+    test and DBmigrations folders
+
+    Here we added front and backend test cases and evidence of DBmigration.
+
+commit d6593940af9112cd46e490e93e5646a362870579
+Merge: 6e40111 06963aa
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sun May 24 23:47:44 2020 +0800
+
+    Merge pull request #12 from 22139722/admin/user_scoreboard
+
+    update_scoreboard
+
+commit 06963aa6d831e1e4ff1aeed957a7904dc20ae81f (origin/admin/user_scoreboard, admin/user_scoreboard)
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sun May 24 23:46:05 2020 +0800
+
+    update_scoreboard
+
+    We have updated scoreboard with fuzzy questions logic and updated its respective controller, model and templates.
+
+commit 6e401110c1f77a6ea4ba21c83bb15850231237a7
+Merge: 410b21d 0bb0610
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 19:53:40 2020 +0800
+
+    Merge pull request #11 from 22139722/admin/user_scoreboard
+
+    Admin/user scoreboard
+
+commit 0bb061094311918fb3008ead8ee7e54238e06f3f
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 19:51:20 2020 +0800
+
+    scoreboard_admin/user
+
+    scoreboard of admin and user to view scores by user the add scores by admin.
+
+commit 38da5b3e4df0ee398b2f151df4657d54925c2591
+Merge: 53c99cd 410b21d
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 19:40:05 2020 +0800
+
+    Merge pull request #10 from 22139722/master
+
+    compare and pull
+
+commit 410b21d61963aed3dccf2d17f84e34492dcbd0ca
+Merge: 53c99cd 65af948
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 19:31:39 2020 +0800
+
+    Merge pull request #9 from 22139722/user_homeandquiz
+
+    User homeandquiz
+
+commit 65af948421efb851bcee62722d4ad9261363130e (origin/user_homeandquiz, user_homeandquiz)
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 19:28:18 2020 +0800
+
+    user home and play quiz
+
+    Here user can login, logout and play quiz and register themselves.
+
+commit ca832737aeb0c4979e766c6030e8bdb42ac72ab3
+Merge: 4caaf35 53c99cd
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 19:14:27 2020 +0800
+
+    Merge pull request #8 from 22139722/master
+
+    compare
+
+commit 53c99cd8d607e9bccde29f0a23dd6e9311173de1
+Merge: 4caaf35 5156137
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 18:57:12 2020 +0800
+
+    Merge pull request #7 from 22139722/admin_manageusers
+
+    Admin manageusers
+
+commit 515613716a418cd51bfd2fb7be6adc7d533901b2 (origin/admin_manageusers, admin_manageusers)
+Author: Sarabjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 18:54:10 2020 +0800
+
+    Manage users
+
+    Here we have add, delete and manage users.
+
+commit ca17fea336cb61ecba06bc5d11c3bdd62ac13af7
+Merge: 0a03fac 4caaf35
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 18:47:41 2020 +0800
+
+    Merge pull request #6 from 22139722/master
+
+    compare
+
+commit 4caaf3544762f010964216c9705d8794e5b48801
+Merge: 0a03fac 2992a33
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 18:36:22 2020 +0800
+
+    Merge pull request #5 from 22139722/admin_questions
+
+    Admin questions
+
+commit 2992a3331f24cdd4e567ee7c5686745776bec0e5 (origin/admin_questions, admin_questions)
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 18:32:51 2020 +0800
+
+    add, manage questions
+
+    Here we have templates, create model, create functions in controller.
+
+commit f5d2d492fef0cf92dbd8cf8b53e99bba01abd8b7
+Merge: 4deffd6 0a03fac
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 18:07:16 2020 +0800
+
+    Merge pull request #4 from 22139722/master
+
+    compare
+
+commit 0a03facca113ccb8cff8b244b16dcd64608964bb
+Merge: 4deffd6 c2cd7de
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 17:59:21 2020 +0800
+
+    Merge pull request #3 from 22139722/admin_level
+
+    Admin level
+
+commit c2cd7de7da82d667cb46e0d7910018263b369eca (origin/admin_level, admin_level)
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Sat May 23 17:56:40 2020 +0800
+
+    level CRUD,homepage,login page
+
+    at this stage levels for the project are created. that includes addition, deletion etc of levels.
+
+commit afa9f2a51b25c85d74c5a08350fd5f486d081ab5
+Merge: 27b0924 4deffd6
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 17:36:13 2020 +0800
+
+    Merge pull request #2 from 22139722/master
+
+    compare
+
+commit 4deffd690ecb994893199f10b0e30dd7cbbd9480
+Merge: 27b0924 9006114
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 17:08:00 2020 +0800
+
+    Merge pull request #1 from 22139722/Initialisation
+
+    Initialisation of Project
+
+commit 9006114496b646d72ae655771dbdd1bbf7624768 (origin/Initialisation, Initialisation)
+Author: mkaur233 <64572533+mkaur233@users.noreply.github.com>
+Date:   Sat May 23 17:00:26 2020 +0800
+
+    Initialisation of Project
+
+    This is the basic structure of project how the files are arranged in a project.
+
+commit 27b09240b9a7ca02dfd49d9ee144c03bf3abf879
+Author: Sarbjit kaur <42457665+22139722@users.noreply.github.com>
+Date:   Thu May 7 13:00:11 2020 +0800
+
+    Initial commit
+(END) 
