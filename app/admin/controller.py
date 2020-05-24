@@ -402,29 +402,45 @@ def scoreboard():
     scoreboard_ = UserScoreBoard.query.all()
     return render_template("admin/scoreboard.html",scoreboard=scoreboard_,users=users,levels=levels)
 
-@admin_routes.route('/scoreboard/<id_>',methods=["GET","POST"])
+@admin_routes.route('/scoreboard/<id_>', methods=["GET", "POST"])
 @login_required
 def scoreboard_detail(id_):
-
     if request.method == "POST":
-        print(request.form)
         for i in request.form:
-            if len(i.split("res-"))>0:
-                try:
+            # if form have any marks response input
+            if "res-" in i:
+                print(i)
+                if len(i.split("res-")) > 0:
+                    try:
+                        if str(request.form[i]).isnumeric():
+                            det = ScoreBoardDetail.query.filter(ScoreBoardDetail.id == int(i.split("res-")[1])).one()
+                            det.obtained_marks = (request.form[i])
+                            db.session.commit()
+                        else:
+                            print(request.form[i])
+                    except Exception as e:
+                        print(e, "Res Exception")
 
-                    det = ScoreBoardDetail.query.filter(ScoreBoardDetail.id == int(i.split("res-")[1])).one()
-                    det.obtained_marks = request.form[i]
-                    print(det)
-                    db.session.commit()
-                except Exception as e:
-                    print(e)
-        flash("ScoreBoard Updated SUccessfully","success")
-        return redirect(url_for("admin.scoreboard_detail",id_=id_))
+            # if form have any feedback input
+            elif "feed-" in i:
+                if len(i.split("feed-")) > 0:
+                    try:
+                        det = ScoreBoardDetail.query.filter(ScoreBoardDetail.id == int(i.split("feed-")[1])).one()
+                        det.feedback = request.form[i]
+                        db.session.commit()
+                    except Exception as e:
+                        print(e)
+
+        # for i in request.form:
+        #
+        #
+        flash("ScoreBoard Updated SUccessfully", "success")
+        return redirect(url_for("admin.scoreboard_detail", id_=id_))
     else:
         board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
         details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
-        return render_template("admin/scoreboarddetails.html",details=details,board_id=board.id,
-                                                              board=board)
+        return render_template("admin/scoreboarddetails.html", details=details, board_id=board.id,
+                               board=board)  
 
 
 @admin_routes.route('/api/board/<id_>/',methods=["GET","POST"])

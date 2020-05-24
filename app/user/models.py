@@ -90,6 +90,7 @@ class ScoreBoardDetail(db.Model):
     question_type = db.Column(db.Enum(ScoreBoardQuestionType), nullable=False)
     total_marks = db.Column(db.Integer, nullable=False)
     obtained_marks = db.Column(db.Integer, nullable=True)
+    feedback = db.Column(db.Text,nullable=True,default="")
 
     @property
     def longquesans(self):

@@ -10,6 +10,7 @@ from ..admin.models import *
 from ..user.models import *
 import datetime
 import os
+from fuzzywuzzy import fuzz
 
 # Define the blueprint: 'admin', set its url prefix: app.url/user
 user_routes = Blueprint('user', __name__, url_prefix='/')
@@ -75,17 +76,22 @@ def user_quiz(id_):
     if questions.count() == 0:
         flash("This Quiz Set Is Not Available For Now.", "danger")
         return redirect(url_for("user.homepage"))
-    elif (UserScoreBoard.query.filter(UserScoreBoard.level_id == id_,
-                                      UserScoreBoard.user_id == json.loads(session['quizuser'])[
-                                          'user_id'])).count() > 0:
-        flash("You are Already Given This Quiz.", "danger")
-        return redirect(url_for("user.homepage"))
+    # elif (UserScoreBoard.query.filter(UserScoreBoard.level_id == id_,
+    #                                   UserScoreBoard.user_id == json.loads(session['quizuser'])[
+    #                                       'user_id'])).count() > 0:
+    #     flash("You are Already Given This Quiz.", "danger")
+    #     return redirect(url_for("user.homepage"))
     else:
         questions = questions.all()
     if request.method == "POST":
         try:
             # Get The Response From The Client Side And Convert It Into Dictionary
-            response = json.loads(request.form['response'])
+            print(request.form['response'])
+            try:
+                response = json.loads(request.form['response'])
+            except:
+                response = {}
+
             # Make The List Of All The IDS of the Answers that is responded by the user
             response_questions_ids = [i['question_id'] for i in response]
             # make an Instance of UserScoreBoard To STore The Result
@@ -134,13 +140,18 @@ def user_quiz(id_):
                         if(mcq.user_answer == i.mcq['correct']):
                             det.obtained_marks = mcq_marks
                             db.session.commit()
+                        else:
+                            det.obtained_marks = 0
+                            db.session.commit()
+                    else:
+                        det.obtained_marks = 0
+                        db.session.commit()
 
                     db.session.add(mcq)
                     db.session.commit()
 
                 # IF QUESTION IS FUZZY
                 elif i.questiontype == "FUZZY":
-                    print(response)
                     fuzzy = ShortTextQuestionAnswer()
                     fuzzy.question = i.question
                     fuzzy.question_id = det.id
@@ -153,11 +164,10 @@ def user_quiz(id_):
                                 user_answer = k['answer']
                         fuzzy.user_answer = user_answer
 
-                        # Check If User Give The Correct Respone
-                        if (str(fuzzy.answer).lower() == str(i.fuzzy['answer']).lower()):
-                            det.obtained_marks = fuzzy_marks
-                            db.session.commit()
-
+                        det.obtained_marks = fuzz.partial_token_set_ratio(str(fuzzy.answer),str(user_answer))/10
+                        db.session.commit()
+                    else:
+                        det.obtained_marks = 0
                     db.session.add(fuzzy)
                     db.session.commit()
 
@@ -180,7 +190,8 @@ def user_quiz(id_):
                 db.session.commit()
             flash("Your Quiz Is Submitted Successfully.", "success")
 
-        except:
+        except Exception as e:
+            print(e)
             flash("Your Quiz is not submitted,because you don't answer atleast one question Or Something Went Wrong.",
                   "warning")
 
@@ -260,10 +271,18 @@ def scoreboard():
 @user_routes.route('/scoreboard/<id_>')
 @login_required
 def scoreboard_detail(id_):
-    board = UserScoreBoard.query.filter(UserScoreBoard.id == id_).first()
-    details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
-    return render_template("user/scoreboarddetails.html", details=details, board_id=board.id, board=board)
-
+    board = UserScoreBoard.query.filter(UserScoreBoard.id == id_)
+    if board.count()>0 and board.first().user is not None:
+        board = board.first()       
+        if board.user_id == json.loads(session['quizuser'])['user_id']:
+            details = ScoreBoardDetail.query.filter(ScoreBoardDetail.scoreboard_id == id_).all()
+            return render_template("user/scoreboarddetails.html", details=details, board_id=board.id, board=board)
+        else:
+            flash("You are not authorised.","warning")
+            return redirect(url_for("user.scoreboard"))
+    else:
+        flash("This Scoreboard is not available.","warning")
+        return redirect(url_for("user.scoreboard"))
 
 @user_routes.route('/api/board/<id_>/', methods=["GET", "POST"])
 def get_score_board_detail(id_):

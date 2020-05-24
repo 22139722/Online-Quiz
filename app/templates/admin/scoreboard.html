@@ -43,6 +43,7 @@
             </thead>
             <tbody id="board-tbody">
                 {% for board in scoreboard %}
+                {% if board.user.email %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ board.user.name }}</td>
@@ -64,6 +65,7 @@
                             </form>
                         </td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
