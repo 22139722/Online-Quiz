@@ -45,3 +45,11 @@ How To Create An Admin User
 Enter the details asked by the Command Prompt
 It will create a new super user.
 
+How to run test cases.
+1. Front_end test case
+for front end cases we first need to open config.py file of the online Quiz project and then replace quiz.db data with test.sqlite3 and then write the following command
+---->python test_front_end.py
+2. Back_end test case
+To run back end test case run the following command on command prompt
+---->python test_back_end.py
+
