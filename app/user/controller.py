@@ -164,7 +164,7 @@ def user_quiz(id_):
                                 user_answer = k['answer']
                         fuzzy.user_answer = user_answer
 
-                        det.obtained_marks = fuzz.partial_token_set_ratio(str(fuzzy.answer),str(user_answer))/10
+                        det.obtained_marks = fuzz.ratio(str(fuzzy.answer),str(user_answer))/10
                         db.session.commit()
                     else:
                         det.obtained_marks = 0
