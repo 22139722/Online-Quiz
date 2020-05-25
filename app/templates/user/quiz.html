@@ -105,6 +105,7 @@
 
 <form action="" method="post" id="quizForm">
    <input type="hidden" name="response" value="" id="response">
+   <input type="hidden" name="questions" id="question_form">
 </form>
 <script>
    $(document).ready(function()
@@ -317,6 +318,7 @@
            url:"{{ url_for('user.get_questions',quizid=quiz_id) }}",
            method:"POST",
            success:function (res) {
+               $("#question_form").val(JSON.stringify(res));
                res.forEach((elem)=>questions.push(elem));
                current_ques_index = 0;
                $('.js-timeout').text(`${questions.length}:00`);

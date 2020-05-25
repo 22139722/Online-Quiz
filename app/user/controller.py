@@ -82,16 +82,21 @@ def user_quiz(id_):
     #     flash("You are Already Given This Quiz.", "danger")
     #     return redirect(url_for("user.homepage"))
     else:
-        questions = questions.all()
+        questions = questions.all()[:10]
     if request.method == "POST":
         try:
             # Get The Response From The Client Side And Convert It Into Dictionary
             print(request.form['response'])
+
             try:
                 response = json.loads(request.form['response'])
             except:
                 response = {}
-
+            questions_res = json.loads(request.form['questions'])
+            questions_ids = [i['id'] for i in questions_res]
+            questions = []
+            for i in questions_ids:
+                questions.append(Question.query.filter(Question.id==i).first())
             # Make The List Of All The IDS of the Answers that is responded by the user
             response_questions_ids = [i['question_id'] for i in response]
             # make an Instance of UserScoreBoard To STore The Result
@@ -189,7 +194,7 @@ def user_quiz(id_):
                 db.session.add(det)
                 db.session.commit()
             flash("Your Quiz Is Submitted Successfully.", "success")
-
+            return "abc";
         except Exception as e:
             print(e)
             flash("Your Quiz is not submitted,because you don't answer atleast one question Or Something Went Wrong.",

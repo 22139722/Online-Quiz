@@ -43,7 +43,7 @@
             </thead>
             <tbody id="board-tbody">
                 {% for board in scoreboard %}
-                {% if board.user.email %}
+                {% if board.user.email and board.level %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ board.user.name }}</td>
