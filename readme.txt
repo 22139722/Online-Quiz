@@ -1,10 +1,11 @@
+# Online-Quiz
 Requirements:
 1. Python 3.0+
 2. PIP
 
 How To Start The Project:
 1. Open The CMD/Terminal in the quizadmin folder 
-2. In window write dir and in lixux/mac write ls in terminal and press enter
+2. In window write dir adn in lixux/mac write ls in terminal and press enter
 -->Verify That You Are inside the run.py folder
 3. Install The Virtual Enviorment In Your System By entering the command 
 -->pip install virtualenv(In Windows)
@@ -43,4 +44,12 @@ How To Create An Admin User
 ---->sudo python3 createsuperuser.py (In Linux)
 Enter the details asked by the Command Prompt
 It will create a new super user.
+
+How to run test cases.
+1. Front_end test case
+for front end cases we first need to open config.py file of the online Quiz project and then replace quiz.db data with test.sqlite3 and then write the following command
+---->python test_front_end.py
+2. Back_end test case
+To run back end test case run the following command on command prompt
+---->python test_back_end.py
 
